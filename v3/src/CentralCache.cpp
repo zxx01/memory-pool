@@ -9,6 +9,16 @@ namespace Kama_memoryPool
     // 每次从PageCache获取span大小（以页为单位）
     static const size_t SPAN_PAGES = 8;
 
+    /**
+     * @brief 从中心缓存获取一批内存块
+     *
+     * 根据指定的索引和批量数量，从中心缓存中获取一批内存块。如果中心缓存中没有足够的内存块，
+     * 则从页缓存中获取新的内存块，并将其切分成小块后返回一部分给调用者，其余部分保留在中心缓存中。
+     *
+     * @param index 对象大小对应的索引，用于定位中心缓存
+     * @param batchNum 批量获取的内存块数量
+     * @return void* 返回分配的内存块链表的起始指针，如果分配失败则返回 nullptr
+     */
     void *CentralCache::fetchRange(size_t index, size_t batchNum)
     {
         // 索引检查，当索引大于等于FREE_LIST_SIZE时，说明申请内存过大应直接向系统申请
@@ -48,7 +58,6 @@ namespace Kama_memoryPool
                 if (allocBlocks > 1)
                 {
                     // 确保至少有两个块才构建链表
-                    // 构建链表
                     for (size_t i = 1; i < allocBlocks; ++i)
                     {
                         void *current = start + (i - 1) * size;
