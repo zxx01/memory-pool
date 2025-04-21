@@ -7,24 +7,24 @@
 using namespace Kama_memoryPool;
 
 // 测试用例
-class P1 
+class P1
 {
-    int id_;
+	int id_;
 };
 
-class P2 
+class P2
 {
-    int id_[5];
+	int id_[5];
 };
 
 class P3
 {
-    int id_[10];
+	int id_[10];
 };
 
 class P4
 {
-    int id_[20];
+	int id_[20];
 };
 
 // 单轮次申请释放次数 线程数 轮次
@@ -34,7 +34,8 @@ void BenchmarkMemoryPool(size_t ntimes, size_t nworks, size_t rounds)
 	size_t total_costtime = 0;
 	for (size_t k = 0; k < nworks; ++k) // 创建 nworks 个线程
 	{
-		vthread[k] = std::thread([&]() {
+		vthread[k] = std::thread([&]()
+														 {
 			for (size_t j = 0; j < rounds; ++j)
 			{
 				size_t begin1 = clock();
@@ -52,10 +53,9 @@ void BenchmarkMemoryPool(size_t ntimes, size_t nworks, size_t rounds)
 				size_t end1 = clock();
 
 				total_costtime += end1 - begin1;
-			}
-		});
+			} });
 	}
-	for (auto& t : vthread)
+	for (auto &t : vthread)
 	{
 		t.join();
 	}
@@ -68,7 +68,8 @@ void BenchmarkNew(size_t ntimes, size_t nworks, size_t rounds)
 	size_t total_costtime = 0;
 	for (size_t k = 0; k < nworks; ++k)
 	{
-		vthread[k] = std::thread([&]() {
+		vthread[k] = std::thread([&]()
+														 {
 			for (size_t j = 0; j < rounds; ++j)
 			{
 				size_t begin1 = clock();
@@ -86,10 +87,9 @@ void BenchmarkNew(size_t ntimes, size_t nworks, size_t rounds)
 				size_t end1 = clock();
 				
 				total_costtime += end1 - begin1;
-			}
-		});
+			} });
 	}
-	for (auto& t : vthread)
+	for (auto &t : vthread)
 	{
 		t.join();
 	}
@@ -98,11 +98,11 @@ void BenchmarkNew(size_t ntimes, size_t nworks, size_t rounds)
 
 int main()
 {
-    HashBucket::initMemoryPool(); // 使用内存池接口前一定要先调用该函数
+	HashBucket::initMemoryPool();		 // 使用内存池接口前一定要先调用该函数
 	BenchmarkMemoryPool(100, 1, 10); // 测试内存池
 	std::cout << "===========================================================================" << std::endl;
 	std::cout << "===========================================================================" << std::endl;
 	BenchmarkNew(100, 1, 10); // 测试 new delete
-	
+
 	return 0;
 }
